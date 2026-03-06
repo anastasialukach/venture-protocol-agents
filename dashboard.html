@@ -37,12 +37,42 @@
         .mini-task.done { color: #555; text-decoration: line-through; }
         .mini-dot { width: 6px; height: 6px; border-radius: 50%; background: #333; }
         .mini-dot.done { background: #10b981; }
-        .progress-bar { height: 3px; background: #1a1a2e; border-radius: 2px; margin-top: 0.5rem; overflow: hidden; }
-        .progress-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
-        .agent-card[data-agent="quinn"] .progress-fill { background: #10b981; }
-        .agent-card[data-agent="maya"] .progress-fill { background: #f59e0b; }
-        .agent-card[data-agent="cole"] .progress-fill { background: #8b5cf6; }
-        .agent-card[data-agent="danny"] .progress-fill { background: #ef4444; }
+        .progress-bar { 
+            height: 8px; 
+            background: #1a1a2e; 
+            border-radius: 4px; 
+            margin-top: 0.5rem; 
+            overflow: hidden; 
+            position: relative;
+        }
+        .progress-fill { 
+            height: 100%; 
+            border-radius: 4px; 
+            transition: width 1s ease-in-out;
+            position: relative;
+            min-width: 0%;
+        }
+        .progress-fill.animated {
+            animation: shimmer 2s infinite, pulse-glow 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px currentColor; }
+            50% { opacity: 0.85; box-shadow: 0 0 20px currentColor; }
+        }
+        .progress-percent {
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+            color: #888;
+        }
+        .agent-card[data-agent="quinn"] .progress-fill { background: linear-gradient(90deg, #10b981, #34d399); color: #10b981; }
+        .agent-card[data-agent="maya"] .progress-fill { background: linear-gradient(90deg, #f59e0b, #fbbf24); color: #f59e0b; }
+        .agent-card[data-agent="cole"] .progress-fill { background: linear-gradient(90deg, #8b5cf6, #a78bfa); color: #8b5cf6; }
+        .agent-card[data-agent="danny"] .progress-fill { background: linear-gradient(90deg, #ef4444, #f87171); color: #ef4444; }
         .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
         .stat-card { background: #12121a; border: 1px solid #1a1a2e; border-radius: 8px; padding: 0.75rem; text-align: center; }
         .stat-value { font-size: 1.5rem; font-weight: 700; color: #6366f1; }
@@ -85,7 +115,12 @@
                     <div class="task-title"><div class="checkbox checked"></div>Keyword + Market research</div>
                     <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>Search volume</li><li class="mini-task done"><div class="mini-dot done"></div>70% low-code stat</li><li class="mini-task done"><div class="mini-dot done"></div>AI pricing data</li></ul>
                 </div>
-                <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+                <div class="progress-bar">
+                    <div class="progress-fill animated" style="width: 100%"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 0.3rem;">
+                    <span class="progress-percent">100%</span>
+                </div>
             </div>
             
             <!-- MAYA -->
@@ -107,7 +142,12 @@
                     <div class="task-title"><div class="checkbox"></div>Blog post</div>
                     <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>SEO title</li><li class="mini-task"><div class="mini-dot"></div>Intro data</li><li class="mini-task"><div class="mini-dot"></div>Comparison</li></ul>
                 </div>
-                <div class="progress-bar"><div class="progress-fill" style="width: 15%"></div></div>
+                <div class="progress-bar">
+                    <div class="progress-fill animated" style="width: 15%"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 0.3rem;">
+                    <span class="progress-percent">15%</span>
+                </div>
             </div>
             
             <!-- COLE (Growth) -->
@@ -125,7 +165,12 @@
                     <div class="task-title"><div class="checkbox"></div>Pitch templates</div>
                     <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>Guest post</li><li class="mini-task"><div class="mini-dot"></div>Tool mention</li><li class="mini-task"><div class="mini-dot"></div>Newsletter swap</li></ul>
                 </div>
-                <div class="progress-bar"><div class="progress-fill" style="width: 5%"></div></div>
+                <div class="progress-bar">
+                    <div class="progress-fill animated" style="width: 5%"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 0.3rem;">
+                    <span class="progress-percent">5%</span>
+                </div>
             </div>
             
             <!-- DANNY (Builder) -->
@@ -147,15 +192,20 @@
                     <div class="task-title"><div class="checkbox"></div>Deploy + test</div>
                     <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>GitHub Pages</li><li class="mini-task"><div class="mini-dot"></div>Mobile test</li><li class="mini-task"><div class="mini-dot"></div>Fix bugs</li></ul>
                 </div>
-                <div class="progress-bar"><div class="progress-fill" style="width: 60%"></div></div>
+                <div class="progress-bar">
+                    <div class="progress-fill animated" style="width: 70%"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 0.3rem;">
+                    <span class="progress-percent">70%</span>
+                </div>
             </div>
         </div>
         
         <div class="stats">
-            <div class="stat-card"><div class="stat-value">4</div><div class="stat-label">Agents</div></div>
-            <div class="stat-card"><div class="stat-value">28</div><div class="stat-label">Total Tasks</div></div>
-            <div class="stat-card"><div class="stat-value">7</div><div class="stat-label">Days Left</div></div>
-            <div class="stat-card"><div class="stat-value">16</div><div class="stat-label">Done</div></div>
+            <div class="stat-card"><div class="stat-value" data-target="4">0</div><div class="stat-label">Agents</div></div>
+            <div class="stat-card"><div class="stat-value" data-target="28">0</div><div class="stat-label">Total Tasks</div></div>
+            <div class="stat-card"><div class="stat-value" data-target="7">0</div><div class="stat-label">Days Left</div></div>
+            <div class="stat-card"><div class="stat-value" data-target="18">0</div><div class="stat-label">Done</div></div>
         </div>
         
         <div class="last-updated">
@@ -164,11 +214,30 @@
     </div>
     
     <script>
+        // Animate counters
+        function animateCounters() {
+            document.querySelectorAll('.stat-value[data-target]').forEach(el => {
+                const target = parseInt(el.dataset.target);
+                const current = parseInt(el.textContent);
+                if (current < target) {
+                    const step = Math.ceil((target - current) / 20);
+                    el.textContent = Math.min(current + step, target);
+                }
+            });
+        }
+        
         function updateClock() {
             document.getElementById('timestamp').textContent = new Date().toLocaleTimeString();
         }
+        
+        // Initial animations
+        animateCounters();
+        setTimeout(animateCounters, 500);
+        setTimeout(animateCounters, 1000);
+        
         updateClock();
         setInterval(updateClock, 1000);
+        setInterval(animateCounters, 30000);
     </script>
 </body>
 </html>
