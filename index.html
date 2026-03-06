@@ -3,223 +3,426 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agent Dashboard — Venture Protocol</title>
+    <title>AI Runway Calculator — Venture Protocol</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e0e0e0; min-height: 100vh; padding: 1rem; }
-        .container { max-width: 1600px; margin: 0 auto; }
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid #1a1a2e; flex-wrap: wrap; gap: 0.5rem; }
-        h1 { font-size: 1.25rem; font-weight: 600; color: #fff; }
-        .header-right { display: flex; align-items: center; gap: 0.75rem; }
-        .project-badge { background: #6366f1; color: #fff; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 500; }
-        .refresh-badge { background: #10b98120; color: #10b981; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.65rem; }
-        .agents-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
-        .agent-card { background: #12121a; border: 1px solid #1a1a2e; border-radius: 10px; padding: 1rem; }
-        .agent-card:hover { border-color: #6366f1; }
-        .agent-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem; }
-        .agent-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem; }
-        .agent-card[data-agent="quinn"] .agent-avatar { background: #10b981; }
-        .agent-card[data-agent="maya"] .agent-avatar { background: #f59e0b; }
-        .agent-card[data-agent="cole"] .agent-avatar { background: #8b5cf6; }
-        .agent-card[data-agent="danny"] .agent-avatar { background: #ef4444; }
-        .agent-name { font-weight: 600; font-size: 1rem; }
-        .agent-role { font-size: 0.7rem; color: #888; }
-        .status-badge { margin-left: auto; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.6rem; font-weight: 500; text-transform: uppercase; }
-        .status-working { background: #10b98120; color: #10b981; }
-        .status-done { background: #6366f120; color: #6366f1; }
-        .task-group { margin-bottom: 0.6rem; }
-        .task-title { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: #ccc; margin-bottom: 0.3rem; }
-        .task-title .checkbox { width: 12px; height: 12px; }
-        .task-title .checkbox.checked { background: #10b981; border-color: #10b981; }
-        .task-title .checkbox.checked::after { font-size: 8px; }
-        .mini-tasks { margin-left: 1.2rem; list-style: none; }
-        .mini-task { display: flex; align-items: center; gap: 0.35rem; padding: 0.15rem 0; font-size: 0.75rem; color: #777; }
-        .mini-task.done { color: #555; text-decoration: line-through; }
-        .mini-dot { width: 6px; height: 6px; border-radius: 50%; background: #333; }
-        .mini-dot.done { background: #10b981; }
-        .progress-bar { height: 3px; background: #1a1a2e; border-radius: 2px; margin-top: 0.5rem; overflow: hidden; }
-        .progress-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
-        .agent-card[data-agent="quinn"] .progress-fill { background: #10b981; }
-        .agent-card[data-agent="maya"] .progress-fill { background: #f59e0b; }
-        .agent-card[data-agent="cole"] .progress-fill { background: #8b5cf6; }
-        .agent-card[data-agent="danny"] .progress-fill { background: #ef4444; }
-        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
-        .stat-card { background: #12121a; border: 1px solid #1a1a2e; border-radius: 8px; padding: 0.75rem; text-align: center; }
-        .stat-value { font-size: 1.5rem; font-weight: 700; color: #6366f1; }
-        .stat-label { font-size: 0.65rem; color: #666; margin-top: 0.2rem; }
-        .last-updated { text-align: center; color: #444; font-size: 0.65rem; }
-        .live-dot { display: inline-block; width: 6px; height: 6px; background: #10b981; border-radius: 50%; margin-right: 0.3rem; animation: pulse 1s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        
+        :root {
+            --bg: #0a0a0f;
+            --card: #12121a;
+            --border: #1a1a2e;
+            --text: #e0e0e0;
+            --text-muted: #888;
+            --accent: #6366f1;
+            --green: #10b981;
+            --red: #ef4444;
+            --amber: #f59e0b;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        header h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+        
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        
+        .card h2 {
+            font-size: 1rem;
+            margin-bottom: 1.25rem;
+            color: var(--text-muted);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .toggle-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .toggle-btn {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .toggle-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--accent);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: transform 0.1s;
+        }
+        
+        .btn:active { transform: scale(0.98); }
+        
+        .result-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            display: none;
+        }
+        
+        .result-card.show { display: block; }
+        
+        .result-card h3 {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+        
+        .runway-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .runway-box {
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+        
+        .runway-box.traditional { border: 2px solid var(--red); }
+        .runway-box.ai { border: 2px solid var(--green); }
+        
+        .runway-box .months {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .runway-box.traditional .months { color: var(--red); }
+        .runway-box.ai .months { color: var(--green); }
+        
+        .runway-box .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+        
+        .runway-box .sub-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+        
+        .savings-box {
+            background: linear-gradient(135deg, var(--green)20, var(--accent)20);
+            border: 1px solid var(--green);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .savings-box .amount {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--green);
+        }
+        
+        .savings-box .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .tools-section h4 {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+        
+        .tools-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .tool-tag {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 0.4rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--text);
+        }
+        
+        .tool-tag.highlight {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+        
+        footer a { color: var(--accent); text-decoration: none; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🤖 Agent Dashboard</h1>
-            <div class="header-right">
-                <span class="project-badge">AI Runway Calculator</span>
-                <span class="refresh-badge"><span class="live-dot"></span>Live: 30s</span>
-            </div>
+            <span class="badge">Venture Protocol</span>
+            <h1>AI Runway Calculator</h1>
+            <p>Compare traditional development costs vs. AI-accelerated costs</p>
         </header>
         
-        <div class="agents-grid">
-            <!-- QUINN -->
-            <div class="agent-card" data-agent="quinn">
-                <div class="agent-header">
-                    <div class="agent-avatar">Q</div>
-                    <div><div class="agent-name">Quinn</div><div class="agent-role">Research</div></div>
-                    <span class="status-badge status-done">Done</span>
+        <div class="grid">
+            <div class="card">
+                <h2>📊 Your Startup</h2>
+                
+                <div class="form-group">
+                    <label>Cash in Bank ($)</label>
+                    <input type="number" id="cash" placeholder="500000" value="500000">
                 </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox checked"></div>Competitor analysis (10 tools)</div>
-                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>runwaycalculator.com</li><li class="mini-task done"><div class="mini-dot done"></div>pilot.com</li><li class="mini-task done"><div class="mini-dot done"></div>tractorventures</li><li class="mini-task done"><div class="mini-dot done"></div>mysa.io</li><li class="mini-task done"><div class="mini-dot done"></div>+ 6 more</li></ul>
+                
+                <div class="form-group">
+                    <label>Monthly Burn Rate ($)</label>
+                    <input type="number" id="burn" placeholder="50000" value="50000">
                 </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox checked"></div>Keyword research</div>
-                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>Search volume</li><li class="mini-task done"><div class="mini-dot done"></div>Competition analysis</li><li class="mini-task done"><div class="mini-dot done"></div>Long-tail keywords</li></ul>
+                
+                <div class="form-group">
+                    <label>Team Size</label>
+                    <select id="team">
+                        <option value="1">1 founder (solo)</option>
+                        <option value="3">2-5 people</option>
+                        <option value="8">6-10 people</option>
+                        <option value="15">10+ people</option>
+                    </select>
                 </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox checked"></div>AI tools market research</div>
-                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>70% low-code by 2026</li><li class="mini-task done"><div class="mini-dot done"></div>AI agent pricing</li><li class="mini-task done"><div class="mini-dot done"></div>Tool landscape</li></ul>
+                
+                <div class="form-group">
+                    <label>Development Scope</label>
+                    <select id="scope">
+                        <option value="mvp">MVP (3 months)</option>
+                        <option value="product">Full Product (6 months)</option>
+                        <option value="scale">Scale (12 months)</option>
+                    </select>
                 </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox checked"></div>Gap analysis + recommendation</div>
-                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>All assume human hiring</li><li class="mini-task done"><div class="mini-dot done"></div>No AI cost calculators</li><li class="mini-task done"><div class="mini-dot done"></div>Build MVP</li></ul>
+                
+                <div class="form-group">
+                    <label>Use AI Agents?</label>
+                    <div class="toggle-group">
+                        <button type="button" class="toggle-btn" data-value="no" onclick="setAI(false)">No</button>
+                        <button type="button" class="toggle-btn active" data-value="yes" onclick="setAI(true)">Yes</button>
+                    </div>
                 </div>
-                <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+                
+                <button class="btn" onclick="calculate()">Calculate Runway</button>
             </div>
             
-            <!-- MAYA -->
-            <div class="agent-card" data-agent="maya">
-                <div class="agent-header">
-                    <div class="agent-avatar">M</div>
-                    <div><div class="agent-name">Maya</div><div class="agent-role">Content</div></div>
-                    <span class="status-badge status-working">Working</span>
+            <div>
+                <div class="card">
+                    <h2>💰 Traditional Runway</h2>
+                    <div class="runway-box traditional">
+                        <div class="months" id="traditional-months">10</div>
+                        <div class="label">months</div>
+                        <div class="sub-label">at current burn rate</div>
+                    </div>
                 </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox"></div>Content framework</div>
-                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>Angle: 2015 vs 2026</li><li class="mini-task"><div class="mini-dot"></div>Hook draft</li><li class="mini-task"><div class="mini-dot"></div>CTA flow</li><li class="mini-task"><div class="mini-dot"></div>Structure outline</li></ul>
+                
+                <div class="card" style="margin-top: 1rem;">
+                    <h2>🤖 AI-Accelerated Runway</h2>
+                    <div class="runway-box ai">
+                        <div class="months" id="ai-months">40</div>
+                        <div class="label">months</div>
+                        <div class="sub-label">with AI agents (4x faster)</div>
+                    </div>
                 </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox"></div>Landing page copy</div>
-                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>Hero headline</li><li class="mini-task"><div class="mini-dot"></div>Sub-headline</li><li class="mini-task"><div class="mini-dot"></div>How-it-works (3 steps)</li><li class="mini-task"><div class="mini-dot"></div>Tool recs section</li><li class="mini-task"><div class="mini-dot"></div>FAQ</li><li class="mini-task"><div class="mini-dot"></div>Footer + CTA</li></ul>
+                
+                <div class="result-card" id="results">
+                    <h3>🚀 Your AI Savings</h3>
+                    <div class="savings-box">
+                        <div class="amount" id="savings">$585,000</div>
+                        <div class="label">estimated savings over 12 months</div>
+                    </div>
+                    
+                    <div class="tools-section">
+                        <h4>🛠️ Recommended AI Stack</h4>
+                        <div class="tools-list" id="tools">
+                            <span class="tool-tag">Cursor</span>
+                            <span class="tool-tag highlight">Make.com</span>
+                            <span class="tool-tag">ChatGPT</span>
+                            <span class="tool-tag highlight">Bubble</span>
+                            <span class="tool-tag">Replit</span>
+                            <span class="tool-tag">Vercel</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox"></div>Blog post</div>
-                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>SEO title + meta</li><li class="mini-task"><div class="mini-dot"></div>Intro with data</li><li class="mini-task"><div class="mini-dot"></div>Traditional vs AI section</li><li class="mini-task"><div class="mini-dot"></div>Comparison table</li><li class="mini-task"><div class="mini-dot"></div>Tool stack list</li><li class="mini-task"><div class="mini-dot"></div>CTA</li></ul>
-                </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox"></div>Social posts</div>
-                    <ul class="mini-tasks"><li class=" class="mini-dotmini-task"><div"></div>LinkedIn post</li><li class="mini-task"><div class="mini-dot"></div>X thread (5 tweets)</li><li class="mini-task"><div class="mini-dot"></div>Dubai group post</li></ul>
-                </div>
-                <div class="progress-bar"><div class="progress-fill" style="width: 10%"></div></div>
-            </div>
-            
-            <!-- COLE (Growth) -->
-            <div class="agent-card" data-agent="cole">
-                <div class="agent-header">
-                    <div class="agent-avatar">C</div>
-                    <div><div class="agent-name">Cole</div><div class="agent-role">Growth</div></div>
-                    <span class="status-badge status-working">Working</span>
-                </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox"></div>Outreach list</div>
-                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>Founder communities (10)</li><li class="mini-task"><div class="mini-dot"></div>Startup newsletters (5)</li><li class="mini-task"><div class="mini-dot"></div>VC blogs (5)</li><li class="mini-task"><div class="mini-dot"></div>Contact research</li></ul>
-                </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox"></div>Pitch templates</div>
-                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>Guest post template</li><li class="mini-task"><div class="mini-dot"></div>Tool mention template</li><li class="mini-task"><div class="mini-dot"></div>Newsletter swap</li><li class="mini-task"><div class="mini-dot"></div>Affiliate inquiry</li></ul>
-                </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox"></div>Guest post outreach</div>
-                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>Personalize pitch</li><li class="mini-task"><div class="mini-dot"></div>Send 10 emails</li><li class="mini-task"><div class="mini-dot"></div>Follow up (once)</li><li class="mini-task"><div class="mini-dot"></div>Track spreadsheet</li></ul>
-                </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox"></div>Social distribution</div>
-                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>LinkedIn announcement</li><li class="mini-task"><div class="mini-dot"></div>X thread launch</li><li class="mini-task"><div class="mini-dot"></div>Product Hunt</li><li class="mini-task"><div class="mini-dot"></div>Reddit r/startups</li></ul>
-                </div>
-                <div class="progress-bar"><div class="progress-fill" style="width: 5%"></div></div>
-            </div>
-            
-            <!-- DANNY (Builder) -->
-            <div class="agent-card" data-agent="danny">
-                <div class="agent-header">
-                    <div class="agent-avatar">D</div>
-                    <div><div class="agent-name">Danny</div><div class="agent-role">Builder</div></div>
-                    <span class="status-badge status-working">Working</span>
-                </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox"></div>SPEC.md</div>
-                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>UI wireframe</li><li class="mini-task"><div class="mini-dot"></div>Input fields list</li><li class="mini-task"><div class="mini-dot"></div>Traditional formula</li><li class="mini-task"><div class="mini-dot"></div>AI cost formula</li><li class="mini-task"><div class="mini-dot"></div>Tool recs logic</li></ul>
-                </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox"></div>Skeleton code</div>
-                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>HTML structure</li><li class="mini-task"><div class="mini-dot"></div>CSS dark theme</li><li class="mini-task"><div class="mini-dot"></div>JS setup</li></ul>
-                </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox"></div>Calculator MVP</div>
-                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>Cash input field</li><li class="mini-task"><div class="mini-dot"></div>Burn rate input</li><li class="mini-task"><div class="mini-dot"></div>Team size input</li><li class="mini-task"><div class="mini-dot"></div>Traditional calc</li><li class="mini-task"><div class="mini-dot"></div>AI runway calc</li><li class="mini-task"><div class="mini-dot"></div>Tool suggestions</li><li class="mini-task"><div class="mini-dot"></div>Results display</li></ul>
-                </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox"></div>Deploy + test</div>
-                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>GitHub Pages</li><li class="mini-task"><div class="mini-dot"></div>Mobile test</li><li class="mini-task"><div class="mini-dot"></div>Desktop test</li><li class="mini-task"><div class="mini-dot"></div>Load speed <3s</li><li class="mini-task"><div class="mini-dot"></div>Fix bugs</li></ul>
-                </div>
-                <div class="progress-bar"><div class="progress-fill" style="width: 8%"></div></div>
             </div>
         </div>
         
-        <div class="stats">
-            <div class="stat-card"><div class="stat-value">4</div><div class="stat-label">Agents</div></div>
-            <div class="stat-card"><div class="stat-value">48</div><div class="stat-label">Total Tasks</div></div>
-            <div class="stat-card"><div class="stat-value">7</div><div class="stat-label">Days Left</div></div>
-            <div class="stat-card"><div class="stat-value" id="completed">12</div><div class="stat-label">Done</div></div>
-        </div>
-        
-        <div class="last-updated">
-            <span class="live-dot"></span> Last update: <span id="timestamp">--</span>
-        </div>
+        <footer>
+            <p>Built by <a href="https://ventureprotocol.com">Venture Protocol</a> — Tools for founders building in the AI age</p>
+        </footer>
     </div>
     
     <script>
-        const STATUS_URL = 'status.json';
-        let lastData = null;
+        let aiEnabled = true;
         
-        async function fetchStatus() {
-            try {
-                const res = await fetch(STATUS_URL + '?t=' + Date.now());
-                const data = await res.json();
-                if (JSON.stringify(data) !== JSON.stringify(lastData)) {
-                    lastData = data;
-                    updateFromJSON(data);
-                }
-            } catch(e) { console.log('Fetch error:', e); }
-        }
-        
-        function updateFromJSON(data) {
-            document.getElementById('timestamp').textContent = new Date(data.last_updated).toLocaleTimeString();
-            document.getElementById('completed').textContent = data.stats.completed;
-            
-            // Update progress bars
-            const agents = ['quinn', 'maya', 'cole', 'danny'];
-            agents.forEach(a => {
-                const card = document.querySelector(`[data-agent="${a}"]`);
-                if (card && data.agents[a]) {
-                    const bar = card.querySelector('.progress-fill');
-                    if (bar) bar.style.width = data.agents[a].progress + '%';
-                }
+        function setAI(value) {
+            aiEnabled = value;
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.classList.toggle('active', 
+                    (value && btn.dataset.value === 'yes') || 
+                    (!value && btn.dataset.value === 'no')
+                );
             });
+            calculate();
         }
         
-        // Initial fetch
-        fetchStatus();
+        function calculate() {
+            const cash = parseFloat(document.getElementById('cash').value) || 0;
+            const burn = parseFloat(document.getElementById('burn').value) || 1;
+            const team = parseInt(document.getElementById('team').value);
+            const scope = document.getElementById('scope').value;
+            
+            // Traditional runway
+            const traditionalMonths = Math.floor(cash / burn);
+            document.getElementById('traditional-months').textContent = traditionalMonths;
+            
+            // AI-accelerated calculations
+            const aiOrchestratorCost = 2000; // $2k/month for AI engineer
+            const aiToolsCost = 500; // $500/month for tools
+            
+            // Speed multiplier based on scope
+            const speedMultipliers = { mvp: 4, product: 3.5, scale: 3 };
+            const speed = speedMultipliers[scope];
+            
+            // AI monthly burn (reduced team + tools)
+            const teamReduction = Math.max(0, team - 1); // Keep 1 person as orchestrator
+            const reducedBurn = (teamReduction * 8000) + aiOrchestratorCost + aiToolsCost;
+            const aiMonths = Math.floor(cash / Math.max(reducedBurn, 1000));
+            
+            document.getElementById('ai-months').textContent = aiMonths;
+            
+            // Show savings
+            const months = scope === 'mvp' ? 3 : scope === 'product' ? 6 : 12;
+            const traditionalCost = team * 15000 * months;
+            const aiCost = reducedBurn * months;
+            const savings = traditionalCost - aiCost;
+            
+            document.getElementById('savings').textContent = '$' + savings.toLocaleString();
+            
+            // Update tools based on scope
+            const toolsByScope = {
+                mvp: ['Make.com', 'Bubble', 'ChatGPT', 'Webflow', 'Airtable'],
+                product: ['Cursor', 'Replit', 'Vercel', 'LangChain', 'Zapier'],
+                scale: ['LangChain', 'AWS', 'PostgreSQL', 'OpenAI API', 'Stripe']
+            };
+            
+            const tools = toolsByScope[scope];
+            const toolsHTML = tools.map((t, i) => 
+                `<span class="tool-tag ${i < 2 ? 'highlight' : ''}">${t}</span>`
+            ).join('');
+            document.getElementById('tools').innerHTML = toolsHTML;
+            
+            // Show/hide results
+            document.getElementById('results').classList.toggle('show', aiEnabled);
+        }
         
-        // Live clock
-        setInterval(() => {
-            document.getElementById('timestamp').textContent = new Date().toLocaleTimeString();
-        }, 1000);
-        
-        // Poll every 30 seconds
-        setInterval(fetchStatus, 30000);
+        // Initial calculation
+        calculate();
     </script>
 </body>
 </html>
