@@ -15,7 +15,7 @@
         .refresh-badge { background: #10b98120; color: #10b981; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.65rem; }
         .agents-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
         .agent-card { background: #12121a; border: 1px solid #1a1a2e; border-radius: 10px; padding: 1rem; }
-        .agent-card:hover { border-color: #6366f1; }
+        .agent-card:hover {6366f1 border-color: #; }
         .agent-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem; }
         .agent-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem; }
         .agent-card[data-agent="quinn"] .agent-avatar { background: #10b981; }
@@ -37,38 +37,12 @@
         .mini-task.done { color: #555; text-decoration: line-through; }
         .mini-dot { width: 6px; height: 6px; border-radius: 50%; background: #333; }
         .mini-dot.done { background: #10b981; }
-        .progress-bar { 
-            height: 8px; 
-            background: #1a1a2e; 
-            border-radius: 4px; 
-            margin-top: 0.5rem; 
-            overflow: hidden; 
-            position: relative;
-        }
-        .progress-fill { 
-            height: 100%; 
-            border-radius: 4px; 
-            transition: width 1s ease-in-out;
-            position: relative;
-            min-width: 0%;
-        }
-        .progress-fill.animated {
-            animation: shimmer 2s infinite, pulse-glow 1.5s infinite;
-        }
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-        @keyframes pulse-glow {
-            0%, 100% { opacity: 1; box-shadow: 0 0 10px currentColor; }
-            50% { opacity: 0.85; box-shadow: 0 0 20px currentColor; }
-        }
-        .progress-percent {
-            font-size: 0.7rem;
-            font-weight: 600;
-            margin-left: 0.5rem;
-            color: #888;
-        }
+        .progress-bar { height: 8px; background: #1a1a2e; border-radius: 4px; margin-top: 0.5rem; overflow: hidden; position: relative; }
+        .progress-fill { height: 100%; border-radius: 4px; transition: width 1s ease-in-out; position: relative; min-width: 0%; }
+        .progress-fill.animated { animation: shimmer 2s infinite, pulse-glow 1.5s infinite; }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        @keyframes pulse-glow { 0%, 100% { opacity: 1; box-shadow: 0 0 10px currentColor; } 50% { opacity: 0.85; box-shadow: 0 0 20px currentColor; } }
+        .progress-percent { font-size: 0.7rem; font-weight: 600; margin-left: 0.5rem; color: #888; }
         .agent-card[data-agent="quinn"] .progress-fill { background: linear-gradient(90deg, #10b981, #34d399); color: #10b981; }
         .agent-card[data-agent="maya"] .progress-fill { background: linear-gradient(90deg, #f59e0b, #fbbf24); color: #f59e0b; }
         .agent-card[data-agent="cole"] .progress-fill { background: linear-gradient(90deg, #8b5cf6, #a78bfa); color: #8b5cf6; }
@@ -82,7 +56,9 @@
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
         .nav-links { text-align: center; margin-bottom: 1rem; }
         .nav-links a { color: #6366f1; text-decoration: none; font-size: 0.85rem; margin: 0 0.5rem; }
-        .nav-links a:hover { text-decoration: underline; }
+        .launch-banner { background: linear-gradient(135deg, #10b981, #6366f1); color: #fff; text-align: center; padding: 1rem; border-radius: 12px; margin-bottom: 1rem; }
+        .launch-banner h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .launch-banner p { font-size: 0.9rem; opacity: 0.9; }
     </style>
 </head>
 <body>
@@ -91,12 +67,17 @@
             <h1>🤖 Agent Dashboard</h1>
             <div class="header-right">
                 <span class="project-badge">AI Runway Calculator</span>
-                <span class="refresh-badge"><span class="live-dot"></span>Live: 30s</span>
+                <span class="refresh-badge"><span class="live-dot"></span>Complete</span>
             </div>
         </header>
         
+        <div class="launch-banner">
+            <h2>🚀 LAUNCH COMPLETE</h2>
+            <p>AI Runway Calculator is LIVE at ventureprotocol.com</p>
+        </div>
+        
         <div class="nav-links">
-            <a href="index.html">← Calculator</a>
+            <a href="index.html">← Try Calculator</a>
         </div>
         
         <div class="agents-grid">
@@ -108,19 +89,10 @@
                     <span class="status-badge status-done">Done</span>
                 </div>
                 <div class="task-group">
-                    <div class="task-title"><div class="checkbox checked"></div>Competitor analysis (10 tools)</div>
-                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>runwaycalculator.com</li><li class="mini-task done"><div class="mini-dot done"></div>pilot.com</li><li class="mini-task done"><div class="mini-dot done"></div>+ 8 more</li></ul>
+                    <div class="task-title"><div class="checkbox checked"></div>Competitor analysis</div>
+                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>10 runway calculators</li><li class="mini-task done"><div class="mini-dot done"></div>Keyword research</li><li class="mini-task done"><div class="mini-dot done"></div>Gap analysis</li></ul>
                 </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox checked"></div>Keyword + Market research</div>
-                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>Search volume</li><li class="mini-task done"><div class="mini-dot done"></div>70% low-code stat</li><li class="mini-task done"><div class="mini-dot done"></div>AI pricing data</li></ul>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill animated" style="width: 100%"></div>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 0.3rem;">
-                    <span class="progress-percent">100%</span>
-                </div>
+                <div class="progress-bar"><div class="progress-fill animated" style="width: 100%"></div></div>
             </div>
             
             <!-- MAYA -->
@@ -128,99 +100,57 @@
                 <div class="agent-header">
                     <div class="agent-avatar">M</div>
                     <div><div class="agent-name">Maya</div><div class="agent-role">Content</div></div>
-                    <span class="status-badge status-working">Working</span>
+                    <span class="status-badge status-done">Done</span>
                 </div>
                 <div class="task-group">
                     <div class="task-title"><div class="checkbox checked"></div>Content framework</div>
-                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>Angle: 2015 vs 2026</li><li class="mini-task done"><div class="mini-dot done"></div>Hook draft</li><li class="mini-task done"><div class="mini-dot done"></div>CTA flow</li></ul>
+                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>Angle: 2015 vs 2026</li><li class="mini-task done"><div class="mini-dot done"></div>Hero + sub-headline</li><li class="mini-task done"><div class="mini-dot done"></div>LinkedIn + X drafts</li></ul>
                 </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox"></div>Landing page copy</div>
-                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>Hero</li><li class="mini-task"><div class="mini-dot"></div>How-it-works</li><li class="mini-task"><div class="mini-dot"></div>Tool recs</li></ul>
-                </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox"></div>Blog post</div>
-                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>SEO title</li><li class="mini-task"><div class="mini-dot"></div>Intro data</li><li class="mini-task"><div class="mini-dot"></div>Comparison</li></ul>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill animated" style="width: 25%"></div>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 0.3rem;">
-                    <span class="progress-percent">25%</span>
-                </div>
-            </div>
+                <div class="progress-bar"><div class="progress-fill animated" style="width: 100%"></div></div>
             </div>
             
-            <!-- COLE (Growth) -->
+            <!-- COLE -->
             <div class="agent-card" data-agent="cole">
                 <div class="agent-header">
                     <div class="agent-avatar">C</div>
                     <div><div class="agent-name">Cole</div><div class="agent-role">Growth</div></div>
-                    <span class="status-badge status-working">Working</span>
+                    <span class="status-badge status-done">Done</span>
                 </div>
                 <div class="task-group">
-                    <div class="task-title"><div class="checkbox checked"></div>Outreach list</div>
-                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>Founder communities (5)</li><li class="mini-task done"><div class="mini-dot done"></div>Newsletters (5)</li><li class="mini-task done"><div class="mini-dot done"></div>VC blogs (5)</li></ul>
+                    <div class="task-title"><div class="checkbox checked"></div>Outreach + Pitches</div>
+                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>20 outreach targets</li><li class="mini-task done"><div class="mini-dot done"></div>Guest post + tool pitch templates</li><li class="mini-task done"><div class="mini-dot done"></div>Newsletter swap + affiliate</li></ul>
                 </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox checked"></div>Pitch templates</div>
-                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>Guest post</li><li class="mini-task done"><div class="mini-dot done"></div>Tool mention</li><li class="mini-task done"><div class="mini-dot done"></div>Newsletter swap</li></ul>
-                </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox"></div>Guest post outreach</div>
-                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>Personalize pitch</li><li class="mini-task"><div class="mini-dot"></div>Send 10 emails</li><li class="mini-task"><div class="mini-dot"></div>Follow up</li></ul>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill animated" style="width: 35%"></div>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 0.3rem;">
-                    <span class="progress-percent">35%</span>
-                </div>
-            </div>
+                <div class="progress-bar"><div class="progress-fill animated" style="width: 100%"></div></div>
             </div>
             
-            <!-- DANNY (Builder) -->
+            <!-- DANNY -->
             <div class="agent-card" data-agent="danny">
                 <div class="agent-header">
                     <div class="agent-avatar">D</div>
                     <div><div class="agent-name">Danny</div><div class="agent-role">Builder</div></div>
-                    <span class="status-badge status-working">Working</span>
+                    <span class="status-badge status-done">Done</span>
                 </div>
                 <div class="task-group">
-                    <div class="task-title"><div class="checkbox checked"></div>SPEC.md</div>
-                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>UI wireframe</li><li class="mini-task done"><div class="mini-dot done"></div>Formulas</li><li class="mini-task done"><div class="mini-dot done"></div>Tool logic</li></ul>
+                    <div class="task-title"><div class="checkbox checked"></div>Calculator Built</div>
+                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>Traditional runway calc</li><li class="mini-task done"><div class="mini-dot done"></div>AI-accelerated runway</li><li class="mini-task done"><div class="mini-dot done"></div>Tool recommendations</li></ul>
                 </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox checked"></div>Calculator MVP</div>
-                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>Input fields</li><li class="mini-task done"><div class="mini-dot done"></div>Traditional calc</li><li class="mini-task done"><div class="mini-dot done"></div>AI runway calc</li><li class="mini-task done"><div class="mini-dot done"></div>Tool suggestions</li></ul>
-                </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox"></div>Deploy + test</div>
-                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>GitHub Pages</li><li class="mini-task"><div class="mini-dot"></div>Mobile test</li><li class="mini-task"><div class="mini-dot"></div>Fix bugs</li></ul>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill animated" style="width: 80%"></div>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 0.3rem;">
-                    <span class="progress-percent">80%</span>
-                </div>
+                <div class="progress-bar"><div class="progress-fill animated" style="width: 100%"></div></div>
             </div>
         </div>
         
         <div class="stats">
             <div class="stat-card"><div class="stat-value" data-target="4">0</div><div class="stat-label">Agents</div></div>
             <div class="stat-card"><div class="stat-value" data-target="28">0</div><div class="stat-label">Total Tasks</div></div>
-            <div class="stat-card"><div class="stat-value" data-target="7">0</div><div class="stat-label">Days Left</div></div>
-            <div class="stat-card"><div class="stat-value" data-target="22">0</div><div class="stat-label">Done</div></div>
+            <div class="stat-card"><div class="stat-value" data-target="1">0</div><div class="stat-label">Days</div></div>
+            <div class="stat-card"><div class="stat-value" data-target="28">0</div><div class="stat-label">Done</div></div>
         </div>
         
         <div class="last-updated">
-            <span class="live-dot"></span> Last update: <span id="timestamp">--</span>
+            <span class="live-dot"></span> Launched: <span id="timestamp">March 6, 2026</span>
         </div>
     </div>
     
     <script>
-        // Animate counters
         function animateCounters() {
             document.querySelectorAll('.stat-value[data-target]').forEach(el => {
                 const target = parseInt(el.dataset.target);
@@ -232,18 +162,9 @@
             });
         }
         
-        function updateClock() {
-            document.getElementById('timestamp').textContent = new Date().toLocaleTimeString();
-        }
-        
-        // Initial animations
-        animateCounters();
+        setTimeout(animateCounters, 100);
         setTimeout(animateCounters, 500);
         setTimeout(animateCounters, 1000);
-        
-        updateClock();
-        setInterval(updateClock, 1000);
-        setInterval(animateCounters, 30000);
     </script>
 </body>
 </html>
