@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Runway Calculator — Venture Protocol</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg: #0a0a0f;
+            --card: #12121a;
+            --border: #1a1a2e;
+            --text: #e0e0e0;
+            --text-muted: #888;
+            --accent: #6366f1;
+            --green: #10b981;
+            --red: #ef4444;
+            --amber: #f59e0b;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        header h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+        
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        
+        .card h2 {
+            font-size: 1rem;
+            margin-bottom: 1.25rem;
+            color: var(--text-muted);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .toggle-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .toggle-btn {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .toggle-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--accent);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: transform 0.1s;
+        }
+        
+        .btn:active { transform: scale(0.98); }
+        
+        .result-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            display: none;
+        }
+        
+        .result-card.show { display: block; }
+        
+        .result-card h3 {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+        
+        .runway-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .runway-box {
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+        
+        .runway-box.traditional { border: 2px solid var(--red); }
+        .runway-box.ai { border: 2px solid var(--green); }
+        
+        .runway-box .months {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .runway-box.traditional .months { color: var(--red); }
+        .runway-box.ai .months { color: var(--green); }
+        
+        .runway-box .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+        
+        .runway-box .sub-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+        
+        .savings-box {
+            background: linear-gradient(135deg, var(--green)20, var(--accent)20);
+            border: 1px solid var(--green);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .savings-box .amount {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--green);
+        }
+        
+        .savings-box .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .tools-section h4 {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+        
+        .tools-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .tool-tag {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 0.4rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--text);
+        }
+        
+        .tool-tag.highlight {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+        
+        footer a { color: var(--accent); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <span class="badge">Venture Protocol</span>
+            <h1>AI Runway Calculator</h1>
+            <p>Compare traditional development costs vs. AI-accelerated costs</p>
+        </header>
+        
+        <div class="grid">
+            <div class="card">
+                <h2>📊 Your Startup</h2>
+                
+                <div class="form-group">
+                    <label>Cash in Bank ($)</label>
+                    <input type="number" id="cash" placeholder="500000" value="500000">
+                </div>
+                
+                <div class="form-group">
+                    <label>Monthly Burn Rate ($)</label>
+                    <input type="number" id="burn" placeholder="50000" value="50000">
+                </div>
+                
+                <div class="form-group">
+                    <label>Team Size</label>
+                    <select id="team">
+                        <option value="1">1 founder (solo)</option>
+                        <option value="3">2-5 people</option>
+                        <option value="8">6-10 people</option>
+                        <option value="15">10+ people</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Development Scope</label>
+                    <select id="scope">
+                        <option value="mvp">MVP (3 months)</option>
+                        <option value="product">Full Product (6 months)</option>
+                        <option value="scale">Scale (12 months)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Use AI Agents?</label>
+                    <div class="toggle-group">
+                        <button type="button" class="toggle-btn" data-value="no" onclick="setAI(false)">No</button>
+                        <button type="button" class="toggle-btn active" data-value="yes" onclick="setAI(true)">Yes</button>
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="calculate()">Calculate Runway</button>
+            </div>
+            
+            <div>
+                <div class="card">
+                    <h2>💰 Traditional Runway</h2>
+                    <div class="runway-box traditional">
+                        <div class="months" id="traditional-months">10</div>
+                        <div class="label">months</div>
+                        <div class="sub-label">at current burn rate</div>
+                    </div>
+                </div>
+                
+                <div class="card" style="margin-top: 1rem;">
+                    <h2>🤖 AI-Accelerated Runway</h2>
+                    <div class="runway-box ai">
+                        <div class="months" id="ai-months">40</div>
+                        <div class="label">months</div>
+                        <div class="sub-label">with AI agents (4x faster)</div>
+                    </div>
+                </div>
+                
+                <div class="result-card" id="results">
+                    <h3>🚀 Your AI Savings</h3>
+                    <div class="savings-box">
+                        <div class="amount" id="savings">$585,000</div>
+                        <div class="label">estimated savings over 12 months</div>
+                    </div>
+                    
+                    <div class="tools-section">
+                        <h4>🛠️ Recommended AI Stack</h4>
+                        <div class="tools-list" id="tools">
+                            <span class="tool-tag">Cursor</span>
+                            <span class="tool-tag highlight">Make.com</span>
+                            <span class="tool-tag">ChatGPT</span>
+                            <span class="tool-tag highlight">Bubble</span>
+                            <span class="tool-tag">Replit</span>
+                            <span class="tool-tag">Vercel</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Built by <a href="https://ventureprotocol.com">Venture Protocol</a> — Tools for founders building in the AI age</p>
+        </footer>
+    </div>
+    
+    <script>
+        let aiEnabled = true;
+        
+        function setAI(value) {
+            aiEnabled = value;
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.classList.toggle('active', 
+                    (value && btn.dataset.value === 'yes') || 
+                    (!value && btn.dataset.value === 'no')
+                );
+            });
+            calculate();
+        }
+        
+        function calculate() {
+            const cash = parseFloat(document.getElementById('cash').value) || 0;
+            const burn = parseFloat(document.getElementById('burn').value) || 1;
+            const team = parseInt(document.getElementById('team').value);
+            const scope = document.getElementById('scope').value;
+            
+            // Traditional runway
+            const traditionalMonths = Math.floor(cash / burn);
+            document.getElementById('traditional-months').textContent = traditionalMonths;
+            
+            // AI-accelerated calculations
+            const aiOrchestratorCost = 2000; // $2k/month for AI engineer
+            const aiToolsCost = 500; // $500/month for tools
+            
+            // Speed multiplier based on scope
+            const speedMultipliers = { mvp: 4, product: 3.5, scale: 3 };
+            const speed = speedMultipliers[scope];
+            
+            // AI monthly burn (reduced team + tools)
+            const teamReduction = Math.max(0, team - 1); // Keep 1 person as orchestrator
+            const reducedBurn = (teamReduction * 8000) + aiOrchestratorCost + aiToolsCost;
+            const aiMonths = Math.floor(cash / Math.max(reducedBurn, 1000));
+            
+            document.getElementById('ai-months').textContent = aiMonths;
+            
+            // Show savings
+            const months = scope === 'mvp' ? 3 : scope === 'product' ? 6 : 12;
+            const traditionalCost = team * 15000 * months;
+            const aiCost = reducedBurn * months;
+            const savings = traditionalCost - aiCost;
+            
+            document.getElementById('savings').textContent = '$' + savings.toLocaleString();
+            
+            // Update tools based on scope
+            const toolsByScope = {
+                mvp: ['Make.com', 'Bubble', 'ChatGPT', 'Webflow', 'Airtable'],
+                product: ['Cursor', 'Replit', 'Vercel', 'LangChain', 'Zapier'],
+                scale: ['LangChain', 'AWS', 'PostgreSQL', 'OpenAI API', 'Stripe']
+            };
+            
+            const tools = toolsByScope[scope];
+            const toolsHTML = tools.map((t, i) => 
+                `<span class="tool-tag ${i < 2 ? 'highlight' : ''}">${t}</span>`
+            ).join('');
+            document.getElementById('tools').innerHTML = toolsHTML;
+            
+            // Show/hide results
+            document.getElementById('results').classList.toggle('show', aiEnabled);
+        }
+        
+        // Initial calculation
+        calculate();
+    </script>
+</body>
+</html>
