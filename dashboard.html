@@ -5,166 +5,346 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agent Dashboard — Venture Protocol</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e0e0e0; min-height: 100vh; padding: 1rem; }
-        .container { max-width: 1600px; margin: 0 auto; }
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid #1a1a2e; flex-wrap: wrap; gap: 0.5rem; }
-        h1 { font-size: 1.25rem; font-weight: 600; color: #fff; }
-        .header-right { display: flex; align-items: center; gap: 0.75rem; }
-        .project-badge { background: #6366f1; color: #fff; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 500; }
-        .refresh-badge { background: #10b98120; color: #10b981; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.65rem; }
-        .agents-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
-        .agent-card { background: #12121a; border: 1px solid #1a1a2e; border-radius: 10px; padding: 1rem; }
-        .agent-card:hover {6366f1 border-color: #; }
-        .agent-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem; }
-        .agent-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem; }
-        .agent-card[data-agent="quinn"] .agent-avatar { background: #10b981; }
-        .agent-card[data-agent="maya"] .agent-avatar { background: #f59e0b; }
-        .agent-card[data-agent="cole"] .agent-avatar { background: #8b5cf6; }
-        .agent-card[data-agent="danny"] .agent-avatar { background: #ef4444; }
-        .agent-name { font-weight: 600; font-size: 1rem; }
-        .agent-role { font-size: 0.7rem; color: #888; }
-        .status-badge { margin-left: auto; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.6rem; font-weight: 500; text-transform: uppercase; }
-        .status-working { background: #10b98120; color: #10b981; }
-        .status-done { background: #6366f120; color: #6366f1; }
-        .task-group { margin-bottom: 0.6rem; }
-        .task-title { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: #ccc; margin-bottom: 0.3rem; }
-        .task-title .checkbox { width: 12px; height: 12px; }
-        .task-title .checkbox.checked { background: #10b981; border-color: #10b981; }
-        .task-title .checkbox.checked::after { content: '✓'; font-size: 8px; color: #fff; display: flex; align-items: center; justify-content: center; }
-        .mini-tasks { margin-left: 1.2rem; list-style: none; }
-        .mini-task { display: flex; align-items: center; gap: 0.35rem; padding: 0.15rem 0; font-size: 0.75rem; color: #777; }
-        .mini-task.done { color: #555; text-decoration: line-through; }
-        .mini-dot { width: 6px; height: 6px; border-radius: 50%; background: #333; }
-        .mini-dot.done { background: #10b981; }
-        .progress-bar { height: 8px; background: #1a1a2e; border-radius: 4px; margin-top: 0.5rem; overflow: hidden; position: relative; }
-        .progress-fill { height: 100%; border-radius: 4px; transition: width 1s ease-in-out; position: relative; min-width: 0%; }
-        .progress-fill.animated { animation: shimmer 2s infinite, pulse-glow 1.5s infinite; }
-        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-        @keyframes pulse-glow { 0%, 100% { opacity: 1; box-shadow: 0 0 10px currentColor; } 50% { opacity: 0.85; box-shadow: 0 0 20px currentColor; } }
-        .progress-percent { font-size: 0.7rem; font-weight: 600; margin-left: 0.5rem; color: #888; }
-        .agent-card[data-agent="quinn"] .progress-fill { background: linear-gradient(90deg, #10b981, #34d399); color: #10b981; }
-        .agent-card[data-agent="maya"] .progress-fill { background: linear-gradient(90deg, #f59e0b, #fbbf24); color: #f59e0b; }
-        .agent-card[data-agent="cole"] .progress-fill { background: linear-gradient(90deg, #8b5cf6, #a78bfa); color: #8b5cf6; }
-        .agent-card[data-agent="danny"] .progress-fill { background: linear-gradient(90deg, #ef4444, #f87171); color: #ef4444; }
-        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
-        .stat-card { background: #12121a; border: 1px solid #1a1a2e; border-radius: 8px; padding: 0.75rem; text-align: center; }
-        .stat-value { font-size: 1.5rem; font-weight: 700; color: #6366f1; }
-        .stat-label { font-size: 0.65rem; color: #666; margin-top: 0.2rem; }
-        .last-updated { text-align: center; color: #444; font-size: 0.65rem; }
-        .live-dot { display: inline-block; width: 6px; height: 6px; background: #10b981; border-radius: 50%; margin-right: 0.3rem; animation: pulse 1s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .nav-links { text-align: center; margin-bottom: 1rem; }
-        .nav-links a { color: #6366f1; text-decoration: none; font-size: 0.85rem; margin: 0 0.5rem; }
-        .launch-banner { background: linear-gradient(135deg, #10b981, #6366f1); color: #fff; text-align: center; padding: 1rem; border-radius: 12px; margin-bottom: 1rem; }
+        
+        :root {
+            --bg: #0d0d12;
+            --card-bg: #16161e;
+            --card-hover: #1c1c28;
+            --border: #2a2a3a;
+            --text: #f0f0f5;
+            --text-muted: #8888a0;
+            --accent: #6366f1;
+            --accent-glow: #6366f140;
+            --green: #10b981;
+            --green-glow: #10b98130;
+            --amber: #f59e0b;
+            --purple: #8b5cf6;
+            --red: #ef4444;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, var(--accent-glow), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 100%, var(--green-glow), transparent);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .container { max-width: 900px; margin: 0 auto; }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #aaa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        header p { color: var(--text-muted); }
+        
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+        
+        .nav-links a:hover {
+            background: var(--card-hover);
+            border-color: var(--accent);
+        }
+        
+        .launch-banner {
+            background: linear-gradient(135deg, var(--green), var(--accent));
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
         .launch-banner h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-        .launch-banner p { font-size: 0.9rem; opacity: 0.9; }
+        .launch-banner p { opacity: 0.9; font-size: 0.95rem; }
+        
+        .agent-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .agent-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .agent-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .agent-card[data-agent="quinn"] .agent-avatar { background: var(--green); }
+        .agent-card[data-agent="maya"] .agent-avatar { background: var(--amber); }
+        .agent-card[data-agent="cole"] .agent-avatar { background: var(--purple); }
+        .agent-card[data-agent="danny"] .agent-avatar { background: var(--red); }
+        
+        .agent-info h3 { font-size: 1.1rem; font-weight: 600; }
+        .agent-info span { font-size: 0.8rem; color: var(--text-muted); }
+        
+        .status-badge {
+            margin-left: auto;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-done { background: var(--green-glow); color: var(--green); }
+        
+        .files-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        .files-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+        
+        .files-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .file-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.75rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        
+        .file-link:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+        
+        .file-link .icon { font-size: 1rem; }
+        
+        .content-preview {
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            max-height: 150px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .content-preview::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: linear-gradient(transparent, var(--bg));
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .stat-value { font-size: 1.75rem; font-weight: 700; color: var(--accent); }
+        .stat-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.25rem; }
+        
+        @media (max-width: 600px) {
+            .stats { grid-template-columns: repeat(2, 1fr); }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
+            <div class="logo">Venture Protocol</div>
             <h1>🤖 Agent Dashboard</h1>
-            <div class="header-right">
-                <span class="project-badge">AI Runway Calculator</span>
-                <span class="refresh-badge"><span class="live-dot"></span>Complete</span>
-            </div>
+            <p>AI Runway Calculator Project — All outputs below</p>
         </header>
         
-        <div class="launch-banner">
-            <h2>🚀 LAUNCH COMPLETE</h2>
-            <p>AI Runway Calculator is LIVE at ventureprotocol.com</p>
-        </div>
-        
         <div class="nav-links">
-            <a href="index.html">← Try Calculator</a>
+            <a href="index.html">← Calculator</a>
         </div>
         
-        <div class="agents-grid">
-            <!-- QUINN -->
-            <div class="agent-card" data-agent="quinn">
-                <div class="agent-header">
-                    <div class="agent-avatar">Q</div>
-                    <div><div class="agent-name">Quinn</div><div class="agent-role">Research</div></div>
-                    <span class="status-badge status-done">Done</span>
+        <div class="launch-banner">
+            <h2>🚀 Project Complete</h2>
+            <p>AI Runway Calculator — Built in 1 day</p>
+        </div>
+        
+        <!-- QUINN - RESEARCH -->
+        <div class="agent-card" data-agent="quinn">
+            <div class="agent-header">
+                <div class="agent-avatar">Q</div>
+                <div class="agent-info">
+                    <h3>Quinn — Research</h3>
+                    <span>Competitor analysis, keyword research, market gap analysis</span>
                 </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox checked"></div>Competitor analysis</div>
-                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>10 runway calculators</li><li class="mini-task done"><div class="mini-dot done"></div>Keyword research</li><li class="mini-task done"><div class="mini-dot done"></div>Gap analysis</li></ul>
-                </div>
-                <div class="progress-bar"><div class="progress-fill animated" style="width: 100%"></div></div>
+                <span class="status-badge status-done">Done</span>
             </div>
             
-            <!-- MAYA -->
-            <div class="agent-card" data-agent="maya">
-                <div class="agent-header">
-                    <div class="agent-avatar">M</div>
-                    <div><div class="agent-name">Maya</div><div class="agent-role">Content</div></div>
-                    <span class="status-badge status-done">Done</span>
+            <div class="files-section">
+                <div class="files-label">📁 Deliverables</div>
+                <div class="files-grid">
+                    <a href="files/quinn-research.md" class="file-link"><span class="icon">📊</span> Research Report</a>
+                    <a href="files/quinn-competitors.md" class="file-link"><span class="icon">🔍</span> Competitor Analysis</a>
+                    <a href="files/quinn-recommendation.md" class="file-link"><span class="icon">💡</span> Recommendation</a>
                 </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox checked"></div>Content framework</div>
-                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>Angle: 2015 vs 2026</li><li class="mini-task done"><div class="mini-dot done"></div>Hero + sub-headline</li><li class="mini-task done"><div class="mini-dot done"></div>LinkedIn + X drafts</li></ul>
+            </div>
+        </div>
+        
+        <!-- MAYA - CONTENT -->
+        <div class="agent-card" data-agent="maya">
+            <div class="agent-header">
+                <div class="agent-avatar">M</div>
+                <div class="agent-info">
+                    <h3>Maya — Content</h3>
+                    <span>Landing page copy, blog post, social media</span>
                 </div>
-                <div class="progress-bar"><div class="progress-fill animated" style="width: 100%"></div></div>
+                <span class="status-badge status-done">Done</span>
             </div>
             
-            <!-- COLE -->
-            <div class="agent-card" data-agent="cole">
-                <div class="agent-header">
-                    <div class="agent-avatar">C</div>
-                    <div><div class="agent-name">Cole</div><div class="agent-role">Growth</div></div>
-                    <span class="status-badge status-done">Done</span>
+            <div class="files-section">
+                <div class="files-label">📁 Deliverables</div>
+                <div class="files-grid">
+                    <a href="files/maya-hero.md" class="file-link"><span class="icon">📝</span> Hero + Headlines</a>
+                    <a href="files/maya-blog.md" class="file-link"><span class="icon">📄</span> Blog Post</a>
+                    <a href="files/maya-linkedin.md" class="file-link"><span class="icon">💼</span> LinkedIn Post</a>
+                    <a href="files/maya-xthread.md" class="file-link"><span class="icon">𝕏</span> X Thread</a>
                 </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox checked"></div>Outreach + Pitches</div>
-                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>20 outreach targets</li><li class="mini-task done"><div class="mini-dot done"></div>Guest post + tool pitch templates</li><li class="mini-task done"><div class="mini-dot done"></div>Newsletter swap + affiliate</li></ul>
+            </div>
+        </div>
+        
+        <!-- COLE - GROWTH -->
+        <div class="agent-card" data-agent="cole">
+            <div class="agent-header">
+                <div class="agent-avatar">C</div>
+                <div class="agent-info">
+                    <h3>Cole — Growth</h3>
+                    <span>Outreach list, pitch templates, distribution strategy</span>
                 </div>
-                <div class="progress-bar"><div class="progress-fill animated" style="width: 100%"></div></div>
+                <span class="status-badge status-done">Done</span>
             </div>
             
-            <!-- DANNY -->
-            <div class="agent-card" data-agent="danny">
-                <div class="agent-header">
-                    <div class="agent-avatar">D</div>
-                    <div><div class="agent-name">Danny</div><div class="agent-role">Builder</div></div>
-                    <span class="status-badge status-done">Done</span>
+            <div class="files-section">
+                <div class="files-label">📁 Deliverables</div>
+                <div class="files-grid">
+                    <a href="files/cole-outreach.md" class="file-link"><span class="icon">📧</span> Outreach List</a>
+                    <a href="files/cole-pitches.md" class="file-link"><span class="icon">📨</span> Pitch Templates</a>
+                    <a href="files/cole-distribution.md" class="file-link"><span class="icon">📢</span> Distribution Plan</a>
                 </div>
-                <div class="task-group">
-                    <div class="task-title"><div class="checkbox checked"></div>Calculator Built</div>
-                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>Traditional runway calc</li><li class="mini-task done"><div class="mini-dot done"></div>AI-accelerated runway</li><li class="mini-task done"><div class="mini-dot done"></div>Tool recommendations</li></ul>
+            </div>
+        </div>
+        
+        <!-- DANNY - BUILDER -->
+        <div class="agent-card" data-agent="danny">
+            <div class="agent-header">
+                <div class="agent-avatar">D</div>
+                <div class="agent-info">
+                    <h3>Danny — Builder</h3>
+                    <span>Calculator code, SPEC.md, deployment</span>
                 </div>
-                <div class="progress-bar"><div class="progress-fill animated" style="width: 100%"></div></div>
+                <span class="status-badge status-done">Done</span>
+            </div>
+            
+            <div class="files-section">
+                <div class="files-label">📁 Deliverables</div>
+                <div class="files-grid">
+                    <a href="files/danny-spec.md" class="file-link"><span class="icon">📐</span> SPEC.md</a>
+                    <a href="index.html" class="file-link"><span class="icon">🧮</span> Calculator (Live)</a>
+                    <a href="https://github.com/anastasialukach/venture-protocol-agents" class="file-link"><span class="icon">🐙</span> GitHub Repo</a>
+                </div>
             </div>
         </div>
         
         <div class="stats">
-            <div class="stat-card"><div class="stat-value" data-target="4">0</div><div class="stat-label">Agents</div></div>
-            <div class="stat-card"><div class="stat-value" data-target="28">0</div><div class="stat-label">Total Tasks</div></div>
-            <div class="stat-card"><div class="stat-value" data-target="1">0</div><div class="stat-label">Days</div></div>
-            <div class="stat-card"><div class="stat-value" data-target="28">0</div><div class="stat-label">Done</div></div>
-        </div>
-        
-        <div class="last-updated">
-            <span class="live-dot"></span> Launched: <span id="timestamp">March 6, 2026</span>
+            <div class="stat-card"><div class="stat-value">4</div><div class="stat-label">Agents</div></div>
+            <div class="stat-card"><div class="stat-value">13</div><div class="stat-label">Files</div></div>
+            <div class="stat-card"><div class="stat-value">1</div><div class="stat-label">Day</div></div>
+            <div class="stat-card"><div class="stat-value">✅</div><div class="stat-label">Status</div></div>
         </div>
     </div>
-    
-    <script>
-        function animateCounters() {
-            document.querySelectorAll('.stat-value[data-target]').forEach(el => {
-                const target = parseInt(el.dataset.target);
-                const current = parseInt(el.textContent);
-                if (current < target) {
-                    const step = Math.ceil((target - current) / 20);
-                    el.textContent = Math.min(current + step, target);
-                }
-            });
-        }
-        
-        setTimeout(animateCounters, 100);
-        setTimeout(animateCounters, 500);
-        setTimeout(animateCounters, 1000);
-    </script>
 </body>
 </html>
