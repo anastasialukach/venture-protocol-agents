@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Dashboard — Venture Protocol</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e0e0e0; min-height: 100vh; padding: 1rem; }
+        .container { max-width: 1600px; margin: 0 auto; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid #1a1a2e; flex-wrap: wrap; gap: 0.5rem; }
+        h1 { font-size: 1.25rem; font-weight: 600; color: #fff; }
+        .header-right { display: flex; align-items: center; gap: 0.75rem; }
+        .project-badge { background: #6366f1; color: #fff; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 500; }
+        .refresh-badge { background: #10b98120; color: #10b981; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.65rem; }
+        .agents-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+        .agent-card { background: #12121a; border: 1px solid #1a1a2e; border-radius: 10px; padding: 1rem; }
+        .agent-card:hover { border-color: #6366f1; }
+        .agent-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem; }
+        .agent-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem; }
+        .agent-card[data-agent="quinn"] .agent-avatar { background: #10b981; }
+        .agent-card[data-agent="maya"] .agent-avatar { background: #f59e0b; }
+        .agent-card[data-agent="cole"] .agent-avatar { background: #8b5cf6; }
+        .agent-card[data-agent="danny"] .agent-avatar { background: #ef4444; }
+        .agent-name { font-weight: 600; font-size: 1rem; }
+        .agent-role { font-size: 0.7rem; color: #888; }
+        .status-badge { margin-left: auto; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.6rem; font-weight: 500; text-transform: uppercase; }
+        .status-working { background: #10b98120; color: #10b981; }
+        .status-done { background: #6366f120; color: #6366f1; }
+        .task-group { margin-bottom: 0.6rem; }
+        .task-title { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: #ccc; margin-bottom: 0.3rem; }
+        .task-title .checkbox { width: 12px; height: 12px; }
+        .task-title .checkbox.checked { background: #10b981; border-color: #10b981; }
+        .task-title .checkbox.checked::after { font-size: 8px; }
+        .mini-tasks { margin-left: 1.2rem; list-style: none; }
+        .mini-task { display: flex; align-items: center; gap: 0.35rem; padding: 0.15rem 0; font-size: 0.75rem; color: #777; }
+        .mini-task.done { color: #555; text-decoration: line-through; }
+        .mini-dot { width: 6px; height: 6px; border-radius: 50%; background: #333; }
+        .mini-dot.done { background: #10b981; }
+        .progress-bar { height: 3px; background: #1a1a2e; border-radius: 2px; margin-top: 0.5rem; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
+        .agent-card[data-agent="quinn"] .progress-fill { background: #10b981; }
+        .agent-card[data-agent="maya"] .progress-fill { background: #f59e0b; }
+        .agent-card[data-agent="cole"] .progress-fill { background: #8b5cf6; }
+        .agent-card[data-agent="danny"] .progress-fill { background: #ef4444; }
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
+        .stat-card { background: #12121a; border: 1px solid #1a1a2e; border-radius: 8px; padding: 0.75rem; text-align: center; }
+        .stat-value { font-size: 1.5rem; font-weight: 700; color: #6366f1; }
+        .stat-label { font-size: 0.65rem; color: #666; margin-top: 0.2rem; }
+        .last-updated { text-align: center; color: #444; font-size: 0.65rem; }
+        .live-dot { display: inline-block; width: 6px; height: 6px; background: #10b981; border-radius: 50%; margin-right: 0.3rem; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Agent Dashboard</h1>
+            <div class="header-right">
+                <span class="project-badge">AI Runway Calculator</span>
+                <span class="refresh-badge"><span class="live-dot"></span>Live: 30s</span>
+            </div>
+        </header>
+        
+        <div class="agents-grid">
+            <!-- QUINN -->
+            <div class="agent-card" data-agent="quinn">
+                <div class="agent-header">
+                    <div class="agent-avatar">Q</div>
+                    <div><div class="agent-name">Quinn</div><div class="agent-role">Research</div></div>
+                    <span class="status-badge status-done">Done</span>
+                </div>
+                <div class="task-group">
+                    <div class="task-title"><div class="checkbox checked"></div>Competitor analysis (10 tools)</div>
+                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>runwaycalculator.com</li><li class="mini-task done"><div class="mini-dot done"></div>pilot.com</li><li class="mini-task done"><div class="mini-dot done"></div>tractorventures</li><li class="mini-task done"><div class="mini-dot done"></div>mysa.io</li><li class="mini-task done"><div class="mini-dot done"></div>+ 6 more</li></ul>
+                </div>
+                <div class="task-group">
+                    <div class="task-title"><div class="checkbox checked"></div>Keyword research</div>
+                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>Search volume</li><li class="mini-task done"><div class="mini-dot done"></div>Competition analysis</li><li class="mini-task done"><div class="mini-dot done"></div>Long-tail keywords</li></ul>
+                </div>
+                <div class="task-group">
+                    <div class="task-title"><div class="checkbox checked"></div>AI tools market research</div>
+                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>70% low-code by 2026</li><li class="mini-task done"><div class="mini-dot done"></div>AI agent pricing</li><li class="mini-task done"><div class="mini-dot done"></div>Tool landscape</li></ul>
+                </div>
+                <div class="task-group">
+                    <div class="task-title"><div class="checkbox checked"></div>Gap analysis + recommendation</div>
+                    <ul class="mini-tasks"><li class="mini-task done"><div class="mini-dot done"></div>All assume human hiring</li><li class="mini-task done"><div class="mini-dot done"></div>No AI cost calculators</li><li class="mini-task done"><div class="mini-dot done"></div>Build MVP</li></ul>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+            </div>
+            
+            <!-- MAYA -->
+            <div class="agent-card" data-agent="maya">
+                <div class="agent-header">
+                    <div class="agent-avatar">M</div>
+                    <div><div class="agent-name">Maya</div><div class="agent-role">Content</div></div>
+                    <span class="status-badge status-working">Working</span>
+                </div>
+                <div class="task-group">
+                    <div class="task-title"><div class="checkbox"></div>Content framework</div>
+                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>Angle: 2015 vs 2026</li><li class="mini-task"><div class="mini-dot"></div>Hook draft</li><li class="mini-task"><div class="mini-dot"></div>CTA flow</li><li class="mini-task"><div class="mini-dot"></div>Structure outline</li></ul>
+                </div>
+                <div class="task-group">
+                    <div class="task-title"><div class="checkbox"></div>Landing page copy</div>
+                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>Hero headline</li><li class="mini-task"><div class="mini-dot"></div>Sub-headline</li><li class="mini-task"><div class="mini-dot"></div>How-it-works (3 steps)</li><li class="mini-task"><div class="mini-dot"></div>Tool recs section</li><li class="mini-task"><div class="mini-dot"></div>FAQ</li><li class="mini-task"><div class="mini-dot"></div>Footer + CTA</li></ul>
+                </div>
+                <div class="task-group">
+                    <div class="task-title"><div class="checkbox"></div>Blog post</div>
+                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>SEO title + meta</li><li class="mini-task"><div class="mini-dot"></div>Intro with data</li><li class="mini-task"><div class="mini-dot"></div>Traditional vs AI section</li><li class="mini-task"><div class="mini-dot"></div>Comparison table</li><li class="mini-task"><div class="mini-dot"></div>Tool stack list</li><li class="mini-task"><div class="mini-dot"></div>CTA</li></ul>
+                </div>
+                <div class="task-group">
+                    <div class="task-title"><div class="checkbox"></div>Social posts</div>
+                    <ul class="mini-tasks"><li class=" class="mini-dotmini-task"><div"></div>LinkedIn post</li><li class="mini-task"><div class="mini-dot"></div>X thread (5 tweets)</li><li class="mini-task"><div class="mini-dot"></div>Dubai group post</li></ul>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 10%"></div></div>
+            </div>
+            
+            <!-- COLE (Growth) -->
+            <div class="agent-card" data-agent="cole">
+                <div class="agent-header">
+                    <div class="agent-avatar">C</div>
+                    <div><div class="agent-name">Cole</div><div class="agent-role">Growth</div></div>
+                    <span class="status-badge status-working">Working</span>
+                </div>
+                <div class="task-group">
+                    <div class="task-title"><div class="checkbox"></div>Outreach list</div>
+                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>Founder communities (10)</li><li class="mini-task"><div class="mini-dot"></div>Startup newsletters (5)</li><li class="mini-task"><div class="mini-dot"></div>VC blogs (5)</li><li class="mini-task"><div class="mini-dot"></div>Contact research</li></ul>
+                </div>
+                <div class="task-group">
+                    <div class="task-title"><div class="checkbox"></div>Pitch templates</div>
+                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>Guest post template</li><li class="mini-task"><div class="mini-dot"></div>Tool mention template</li><li class="mini-task"><div class="mini-dot"></div>Newsletter swap</li><li class="mini-task"><div class="mini-dot"></div>Affiliate inquiry</li></ul>
+                </div>
+                <div class="task-group">
+                    <div class="task-title"><div class="checkbox"></div>Guest post outreach</div>
+                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>Personalize pitch</li><li class="mini-task"><div class="mini-dot"></div>Send 10 emails</li><li class="mini-task"><div class="mini-dot"></div>Follow up (once)</li><li class="mini-task"><div class="mini-dot"></div>Track spreadsheet</li></ul>
+                </div>
+                <div class="task-group">
+                    <div class="task-title"><div class="checkbox"></div>Social distribution</div>
+                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>LinkedIn announcement</li><li class="mini-task"><div class="mini-dot"></div>X thread launch</li><li class="mini-task"><div class="mini-dot"></div>Product Hunt</li><li class="mini-task"><div class="mini-dot"></div>Reddit r/startups</li></ul>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 5%"></div></div>
+            </div>
+            
+            <!-- DANNY (Builder) -->
+            <div class="agent-card" data-agent="danny">
+                <div class="agent-header">
+                    <div class="agent-avatar">D</div>
+                    <div><div class="agent-name">Danny</div><div class="agent-role">Builder</div></div>
+                    <span class="status-badge status-working">Working</span>
+                </div>
+                <div class="task-group">
+                    <div class="task-title"><div class="checkbox"></div>SPEC.md</div>
+                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>UI wireframe</li><li class="mini-task"><div class="mini-dot"></div>Input fields list</li><li class="mini-task"><div class="mini-dot"></div>Traditional formula</li><li class="mini-task"><div class="mini-dot"></div>AI cost formula</li><li class="mini-task"><div class="mini-dot"></div>Tool recs logic</li></ul>
+                </div>
+                <div class="task-group">
+                    <div class="task-title"><div class="checkbox"></div>Skeleton code</div>
+                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>HTML structure</li><li class="mini-task"><div class="mini-dot"></div>CSS dark theme</li><li class="mini-task"><div class="mini-dot"></div>JS setup</li></ul>
+                </div>
+                <div class="task-group">
+                    <div class="task-title"><div class="checkbox"></div>Calculator MVP</div>
+                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>Cash input field</li><li class="mini-task"><div class="mini-dot"></div>Burn rate input</li><li class="mini-task"><div class="mini-dot"></div>Team size input</li><li class="mini-task"><div class="mini-dot"></div>Traditional calc</li><li class="mini-task"><div class="mini-dot"></div>AI runway calc</li><li class="mini-task"><div class="mini-dot"></div>Tool suggestions</li><li class="mini-task"><div class="mini-dot"></div>Results display</li></ul>
+                </div>
+                <div class="task-group">
+                    <div class="task-title"><div class="checkbox"></div>Deploy + test</div>
+                    <ul class="mini-tasks"><li class="mini-task"><div class="mini-dot"></div>GitHub Pages</li><li class="mini-task"><div class="mini-dot"></div>Mobile test</li><li class="mini-task"><div class="mini-dot"></div>Desktop test</li><li class="mini-task"><div class="mini-dot"></div>Load speed <3s</li><li class="mini-task"><div class="mini-dot"></div>Fix bugs</li></ul>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 8%"></div></div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card"><div class="stat-value">4</div><div class="stat-label">Agents</div></div>
+            <div class="stat-card"><div class="stat-value">48</div><div class="stat-label">Total Tasks</div></div>
+            <div class="stat-card"><div class="stat-value">7</div><div class="stat-label">Days Left</div></div>
+            <div class="stat-card"><div class="stat-value" id="completed">12</div><div class="stat-label">Done</div></div>
+        </div>
+        
+        <div class="last-updated">
+            <span class="live-dot"></span> Last update: <span id="timestamp">--</span>
+        </div>
+    </div>
+    
+    <script>
+        const STATUS_URL = 'status.json';
+        let lastData = null;
+        
+        async function fetchStatus() {
+            try {
+                const res = await fetch(STATUS_URL + '?t=' + Date.now());
+                const data = await res.json();
+                if (JSON.stringify(data) !== JSON.stringify(lastData)) {
+                    lastData = data;
+                    updateFromJSON(data);
+                }
+            } catch(e) { console.log('Fetch error:', e); }
+        }
+        
+        function updateFromJSON(data) {
+            document.getElementById('timestamp').textContent = new Date(data.last_updated).toLocaleTimeString();
+            document.getElementById('completed').textContent = data.stats.completed;
+            
+            // Update progress bars
+            const agents = ['quinn', 'maya', 'cole', 'danny'];
+            agents.forEach(a => {
+                const card = document.querySelector(`[data-agent="${a}"]`);
+                if (card && data.agents[a]) {
+                    const bar = card.querySelector('.progress-fill');
+                    if (bar) bar.style.width = data.agents[a].progress + '%';
+                }
+            });
+        }
+        
+        // Initial fetch
+        fetchStatus();
+        
+        // Live clock
+        setInterval(() => {
+            document.getElementById('timestamp').textContent = new Date().toLocaleTimeString();
+        }, 1000);
+        
+        // Poll every 30 seconds
+        setInterval(fetchStatus, 30000);
+    </script>
+</body>
+</html>
