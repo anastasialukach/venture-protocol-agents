@@ -5,34 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Runway Calculator — Venture Protocol</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=SF+Pro+Text:wght@300;400;500;600&display=swap');
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
-            --bg: #0d0d12;
-            --card-bg: #16161e;
-            --card-hover: #1c1c28;
-            --border: #2a2a3a;
-            --text: #f0f0f5;
-            --text-muted: #8888a0;
-            --accent: #6366f1;
-            --accent-glow: #6366f140;
-            --green: #10b981;
-            --green-glow: #10b98130;
-            --red: #ef4444;
-            --red-glow: #ef444430;
+            --bg: #000000;
+            --card-bg: #1c1c1e;
+            --card-bg-elevated: #2c2c2e;
+            --text: #ffffff;
+            --text-secondary: #8e8e93;
+            --text-tertiary: #636366;
+            --accent: #0a84ff;
+            --accent-blue: #0a84ff;
+            --green: #30d158;
+            --red: #ff453a;
+            --separator: #38383a;
+            --glass: rgba(28, 28, 30, 0.8);
         }
         
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
-            line-height: 1.6;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
         }
         
-        /* Animated background */
+        /* Animated gradient background */
         body::before {
             content: '';
             position: fixed;
@@ -41,121 +42,135 @@
             right: 0;
             bottom: 0;
             background: 
-                radial-gradient(ellipse 80% 50% at 50% -20%, var(--accent-glow), transparent),
-                radial-gradient(ellipse 60% 40% at 80% 100%, var(--green-glow), transparent);
+                radial-gradient(ellipse 100% 80% at 20% -10%, #1a1a2e 0%, transparent 50%),
+                radial-gradient(ellipse 80% 60% at 80% 110%, #0a1628 0%, transparent 50%);
             pointer-events: none;
             z-index: -1;
         }
         
         .container {
-            max-width: 900px;
+            max-width: 680px;
             margin: 0 auto;
-            padding: 3rem 1.5rem;
+            padding: 60px 20px 40px;
         }
         
         header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 40px;
         }
         
         .logo {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--accent);
+            font-family: 'SF Pro Text', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-tertiary);
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            margin-bottom: 1rem;
+            margin-bottom: 16px;
         }
         
         h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #fff 0%, #aaa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.75rem;
+            font-size: 40px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
         }
         
         header p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            max-width: 500px;
-            margin: 0 auto;
+            color: var(--text-secondary);
+            font-size: 17px;
+            font-weight: 400;
         }
         
         .calculator {
             background: var(--card-bg);
-            border: 1px solid var(--border);
             border-radius: 20px;
-            padding: 2rem;
-            margin-bottom: 2rem;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 
+                0 0 0 0.5px rgba(255,255,255,0.05),
+                0 20px 40px rgba(0,0,0,0.4);
         }
         
         .input-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.25rem;
-            margin-bottom: 1.5rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        @media (max-width: 500px) {
+            .input-grid { grid-template-columns: 1fr; }
         }
         
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 6px;
         }
         
         .input-group label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
+            font-size: 13px;
             font-weight: 500;
+            color: var(--text-secondary);
         }
         
         .input-group input,
         .input-group select {
-            padding: 0.875rem 1rem;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 10px;
+            padding: 14px 16px;
+            background: var(--card-bg-elevated);
+            border: none;
+            border-radius: 12px;
             color: var(--text);
-            font-size: 1rem;
-            font-family: 'JetBrains Mono', monospace;
-            transition: all 0.2s;
+            font-size: 17px;
+            font-family: 'SF Pro Text', sans-serif;
+            transition: all 0.2s ease;
+            -webkit-appearance: none;
+            appearance: none;
         }
         
         .input-group input:focus,
         .input-group select:focus {
             outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
+            box-shadow: 0 0 0 3px var(--accent-blue);
+        }
+        
+        .input-group select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238e8e93' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
         }
         
         .toggle-container {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            background: var(--bg);
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
+            justify-content: space-between;
+            padding: 16px;
+            background: var(--card-bg-elevated);
+            border-radius: 14px;
+            margin-bottom: 24px;
         }
         
         .toggle-label {
-            flex: 1;
+            font-size: 15px;
             font-weight: 500;
         }
         
         .toggle-label span {
             display: block;
-            font-size: 0.8rem;
-            color: var(--text-muted);
+            font-size: 13px;
+            color: var(--text-secondary);
             font-weight: 400;
+            margin-top: 2px;
         }
         
         .toggle {
             position: relative;
-            width: 52px;
-            height: 28px;
+            width: 51px;
+            height: 31px;
+            flex-shrink: 0;
         }
         
         .toggle input { opacity: 0; width: 0; height: 0; }
@@ -164,60 +179,52 @@
             position: absolute;
             cursor: pointer;
             inset: 0;
-            background: var(--border);
-            border-radius: 28px;
-            transition: 0.3s;
+            background: #39393d;
+            border-radius: 31px;
+            transition: 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
         }
         
         .toggle-slider::before {
             content: '';
             position: absolute;
-            height: 22px;
-            width: 22px;
-            left: 3px;
-            bottom: 3px;
+            height: 27px;
+            width: 27px;
+            left: 2px;
+            bottom: 2px;
             background: white;
             border-radius: 50%;
-            transition: 0.3s;
+            transition: 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
         .toggle input:checked + .toggle-slider {
-            background: var(--accent);
+            background: var(--accent-blue);
         }
         
         .toggle input:checked + .toggle-slider::before {
-            transform: translateX(24px);
+            transform: translateX(20px);
         }
         
         .results {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-top: 1.5rem;
+            gap: 12px;
         }
         
-        @media (max-width: 600px) {
+        @media (max-width: 500px) {
             .results { grid-template-columns: 1fr; }
         }
         
         .result-card {
-            background: var(--bg);
-            border-radius: 14px;
-            padding: 1.5rem;
+            background: var(--card-bg-elevated);
+            border-radius: 16px;
+            padding: 20px;
             text-align: center;
             position: relative;
             overflow: hidden;
         }
         
-        .result-card.traditional {
-            border: 2px solid var(--red);
-        }
-        
-        .result-card.ai {
-            border: 2px solid var(--green);
-        }
-        
-        .result-card::before {
+        .result-card::after {
             content: '';
             position: absolute;
             top: 0;
@@ -226,111 +233,144 @@
             height: 3px;
         }
         
-        .result-card.traditional::before {
+        .result-card.traditional::after {
             background: var(--red);
         }
         
-        .result-card.ai::before {
+        .result-card.ai::after {
             background: var(--green);
         }
         
         .result-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 0.5rem;
+            margin-bottom: 4px;
         }
         
         .result-value {
-            font-size: 3rem;
+            font-size: 48px;
             font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'SF Pro Display', sans-serif;
+            letter-spacing: -0.03em;
         }
         
         .result-card.traditional .result-value { color: var(--red); }
         .result-card.ai .result-value { color: var(--green); }
         
         .result-sub {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 0.25rem;
+            font-size: 14px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
         }
         
         .savings-card {
-            background: linear-gradient(135deg, var(--green-glow), var(--accent-glow));
-            border: 1px solid var(--green);
-            border-radius: 14px;
-            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(48, 209, 88, 0.15), rgba(10, 132, 255, 0.15));
+            border: 1px solid rgba(48, 209, 88, 0.3);
+            border-radius: 16px;
+            padding: 20px;
             text-align: center;
-            margin-top: 1rem;
+            margin-top: 12px;
             display: none;
         }
         
         .savings-card.show { display: block; }
         
         .savings-value {
-            font-size: 2rem;
+            font-size: 28px;
             font-weight: 700;
             color: var(--green);
-            font-family: 'JetBrains Mono', monospace;
         }
         
         .savings-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 0.25rem;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 4px;
         }
         
         .tools-section {
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border);
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--separator);
         }
         
         .tools-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 0.75rem;
+            margin-bottom: 12px;
         }
         
         .tools-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
+            gap: 8px;
         }
         
         .tool-tag {
-            padding: 0.4rem 0.75rem;
-            background: var(--card-hover);
-            border: 1px solid var(--border);
+            padding: 8px 14px;
+            background: var(--card-bg-elevated);
             border-radius: 20px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
         }
         
         .tool-tag.highlight {
-            background: var(--accent);
-            border-color: var(--accent);
+            background: var(--accent-blue);
             color: white;
         }
         
         footer {
             text-align: center;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            padding-top: 2rem;
+            color: var(--text-tertiary);
+            font-size: 13px;
+            padding-top: 24px;
         }
         
         footer a {
-            color: var(--accent);
+            color: var(--accent-blue);
             text-decoration: none;
         }
         
         footer a:hover {
             text-decoration: underline;
+        }
+        
+        /* Apple-style animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .calculator {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        .result-card {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 0.1s;
+            opacity: 0;
+        }
+        
+        .result-card.ai {
+            animation-delay: 0.2s;
+        }
+        
+        .savings-card {
+            animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 0.3s;
+            opacity: 0;
         }
     </style>
 </head>
@@ -339,25 +379,25 @@
         <header>
             <div class="logo">Venture Protocol</div>
             <h1>AI Runway Calculator</h1>
-            <p>Compare traditional development costs vs. AI-accelerated costs. See how much runway you really have.</p>
+            <p>See how much runway you really have</p>
         </header>
         
         <div class="calculator">
             <div class="input-grid">
                 <div class="input-group">
-                    <label>Cash in Bank ($)</label>
-                    <input type="number" id="cash" value="500000" placeholder="500000">
+                    <label>Cash in Bank</label>
+                    <input type="number" id="cash" value="500000" placeholder="$500,000">
                 </div>
                 <div class="input-group">
-                    <label>Monthly Burn ($)</label>
-                    <input type="number" id="burn" value="50000" placeholder="50000">
+                    <label>Monthly Burn</label>
+                    <input type="number" id="burn" value="50000" placeholder="$50,000">
                 </div>
                 <div class="input-group">
                     <label>Team Size</label>
                     <select id="team">
                         <option value="1">1 founder (solo)</option>
-                        <option value="3">2-5 people</option>
-                        <option value="8">6-10 people</option>
+                        <option value="3">2–5 people</option>
+                        <option value="8">6–10 people</option>
                         <option value="15">10+ people</option>
                     </select>
                 </div>
@@ -374,7 +414,7 @@
             <div class="toggle-container">
                 <div class="toggle-label">
                     Use AI Agents
-                    <span>4x faster development with AI orchestration</span>
+                    <span>4× faster development</span>
                 </div>
                 <label class="toggle">
                     <input type="checkbox" id="aiToggle" checked onchange="calculate()">
@@ -384,14 +424,14 @@
             
             <div class="results">
                 <div class="result-card traditional">
-                    <div class="result-label">Traditional Runway</div>
+                    <div class="result-label">Traditional</div>
                     <div class="result-value" id="traditionalMonths">10</div>
-                    <div class="result-sub">months at current burn</div>
+                    <div class="result-sub">months</div>
                 </div>
                 <div class="result-card ai">
-                    <div class="result-label">AI-Accelerated</div>
+                    <div class="result-label">AI‑Accelerated</div>
                     <div class="result-value" id="aiMonths">40</div>
-                    <div class="result-sub">months with AI agents</div>
+                    <div class="result-sub">months</div>
                 </div>
             </div>
             
@@ -407,7 +447,7 @@
         </div>
         
         <footer>
-            Built by <a href="#">Venture Protocol</a> — Tools for founders building in the AI age
+            Built by <a href="#">Venture Protocol</a>
         </footer>
     </div>
     
